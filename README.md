@@ -6,7 +6,7 @@ Organisations write brand guidelines, but nothing checks that people follow them
 
 BrandLint sits between writing and publishing. It checks content against the organisation's **own approved knowledge** (guideline rules, approved facts, a claim registry and terminology), explains every issue with the exact source it comes from, and routes the decision to the right person. It never publishes and never silently rejects. Over time, it shows the brand team which rules people misunderstand, dispute or contradict, so the guideline itself gets better.
 
-- **Live demo:** _add the Vercel URL after deploying_ (no sign-up; each visitor gets a private demo workspace for **Lumera Skin**, a fictional skincare brand)
+- **Live demo:** https://brandlint.vercel.app (no sign-up; each visitor gets a private demo workspace for **Lumera Skin**, a fictional skincare brand)
 - **Architecture and technical decisions:** [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 
 ---
