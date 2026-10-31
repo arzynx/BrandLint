@@ -11,7 +11,10 @@ import { claimSource, claimUsable, factSource, ruleApplies, ruleSource } from ".
  * dropped. Evidence the model cites must resolve to a real fact or claim record.
  */
 
-const MODELS = [process.env.GEMINI_MODEL, "gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-flash-latest"].filter(Boolean) as string[];
+// Fastest first: a check should feel instant. The larger model is the fallback, not the default.
+const MODELS = [process.env.GEMINI_MODEL, "gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-flash-latest"].filter(Boolean) as string[];
+// Per-attempt limits: a slow first model fails over quickly instead of using up the whole request.
+const ATTEMPT_MS = [12_000, 18_000, 18_000];
 const dead = new Set<string>(); // models that returned 404 for this key
 
 export function aiAvailable(): boolean {
@@ -29,7 +32,7 @@ async function callGemini(system: string, user: string): Promise<unknown> {
   if (!key) throw new Error("AI offline");
   const order = [...new Set([workingModel, ...MODELS].filter((m): m is string => !!m && !dead.has(m)))];
   let lastErr: unknown;
-  for (const model of order) {
+  for (const [attempt, model] of order.entries()) {
     try {
       const res = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
@@ -46,7 +49,7 @@ async function callGemini(system: string, user: string): Promise<unknown> {
               ...(model.startsWith("gemini-3") ? { thinkingConfig: { thinkingLevel: "low" } } : {}),
             },
           }),
-          signal: AbortSignal.timeout(20_000),
+          signal: AbortSignal.timeout(ATTEMPT_MS[Math.min(attempt, ATTEMPT_MS.length - 1)]),
         },
       );
       if (res.status === 404) {

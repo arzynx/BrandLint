@@ -34,6 +34,12 @@ describe("regressions", () => {
     expect(check(text).filter((x) => x.ruleId === "R-4.1")).toHaveLength(0);
     expect(check("Our Glow Serum is ₹799 and our Daily Sunscreen is ₹599.").find((x) => x.ruleId === "R-4.1")?.suggestion).toBe("₹549");
   });
+  it("never suggests a fix in capitals, which would recreate the shouting", () => {
+    const f = check("LAST CHANCE to shop. BUY NOW.");
+    expect(f.find((x) => x.excerpt === "LAST CHANCE")?.suggestion).toBe("Shop the range");
+    expect(f.find((x) => x.excerpt === "BUY NOW")?.suggestion).toBe("Shop the range");
+    for (const x of f) if (x.suggestion) expect(check(x.suggestion).some((y) => y.ruleId === "R-2.4")).toBe(false);
+  });
   it("cites the claim a fix is built from as evidence", () => {
     const f = check("India's #1 serum for dark spots.").find((x) => x.excerpt?.startsWith("#1"))!;
     expect(f.evidence?.id).toBe("C-04");

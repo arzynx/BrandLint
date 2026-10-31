@@ -46,7 +46,7 @@ Workflow UI: findings ↔ highlights, accept/edit/dismiss, revisions + diff, rev
 
 **Confidence is honest, not decorative.** Exact phrase matches score 0.9 to 0.97; single-word terms 0.85; ambiguous words like "best" 0.7; OCR-derived findings are capped at 0.8; AI findings are clamped to 0.3 to 0.9. Findings below 0.6 are grouped as "Worth a look".
 
-**Graceful degradation.** No key, timeout, invalid JSON or quota errors → the check still returns rule findings with `aiStatus: "error" | "offline"`, and the UI says so. Model ids are tried in order (`GEMINI_MODEL`, `gemini-3.5-flash`, `gemini-flash-latest`, `gemini-3-flash-preview`) and the first that works is remembered.
+**Graceful degradation.** No key, timeout, invalid JSON or quota errors → the check still returns rule findings with `aiStatus: "error" | "offline"`, and the UI says so. Model ids are tried in order (`GEMINI_MODEL`, `gemini-3.5-flash-lite`, `gemini-3.5-flash`, `gemini-flash-latest`), each with its own time limit (12 s for the first attempt, 18 s after), and the first that works is remembered.
 
 ## Security and privacy
 

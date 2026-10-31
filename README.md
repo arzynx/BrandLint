@@ -87,7 +87,7 @@ Everything below "Three ideas" is implemented and covered by unit tests in `src/
 | App | Next.js 16 (App Router, React 19, TypeScript), Tailwind CSS 4, deployed on Vercel |
 | Rule engine | Own TypeScript code (`src/lib/engine`): regex and lexicon checks, fact and claim matching, WCAG contrast, CIEDE2000, k-means |
 | Knowledge and governance | `src/lib/knowledge.ts` (scope, freshness, citation resolution), `src/lib/governance.ts` (routing, approval requirements), `src/lib/insights.ts` (gaps, disputes, conflicts) |
-| AI | Google Gemini API via REST (`gemini-3.5-flash`, with fallbacks), JSON output |
+| AI | Google Gemini API via REST (`gemini-3.5-flash-lite` first, falling back to `gemini-3.5-flash`), JSON output |
 | PDF | `unpdf` (PDF.js serverless build) on the server, in memory |
 | OCR | `tesseract.js` in the browser (WASM worker and English model loaded from the jsDelivr CDN) |
 | Storage | Browser `localStorage` (per-visitor sandbox); no server database |

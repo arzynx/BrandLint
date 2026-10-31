@@ -83,9 +83,13 @@ export function sentenceAt(text: string, index: number): Span {
   );
 }
 
-/** Keep the capitalisation style of the original word when suggesting a replacement. */
+/**
+ * Keep the capitalisation style of the original word when suggesting a replacement.
+ * An ALL-CAPS original gets a sentence-case fix: copying the caps would recreate the shouting the guideline forbids.
+ */
 export function matchCase(original: string, replacement: string): string {
-  if (/[a-z]/i.test(original) && original === original.toUpperCase() && original.length > 1) return replacement.toUpperCase();
+  if (/[a-z]/i.test(original) && original === original.toUpperCase() && original.length > 1)
+    return replacement.charAt(0).toUpperCase() + replacement.slice(1);
   if (original[0] === original[0]?.toUpperCase() && /[a-z]/i.test(original[0]))
     return replacement[0].toUpperCase() + replacement.slice(1);
   return replacement;
