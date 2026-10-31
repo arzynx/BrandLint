@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <rect width="1080" height="1080" fill="#F6F1E7"/>
+  <rect x="0" y="0" width="1080" height="420" fill="#1F4E5F"/>
+  <rect x="80" y="880" width="360" height="90" rx="12" fill="#E8735A"/>
+  <text x="80" y="200" font-family="Arial, Helvetica, sans-serif" font-size="80" font-weight="700" fill="#FFFFFF">Meet the Glow Serum</text>
+  <text x="80" y="310" font-family="Arial, Helvetica, sans-serif" font-size="48" fill="#F6F1E7">Vitamin C for brighter, even-looking tone</text>
+  <text x="80" y="560" font-family="Arial, Helvetica, sans-serif" font-size="46" fill="#1B1B1B">Dermatologically tested on sensitive skin.</text>
+  <text x="80" y="650" font-family="Arial, Helvetica, sans-serif" font-size="46" fill="#1B1B1B">30 ml, Rs. 799</text>
+  <text x="110" y="940" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="700" fill="#1B1B1B">Skin, explained.</text>
+</svg>

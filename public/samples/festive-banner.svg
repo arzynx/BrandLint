@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <rect width="1080" height="1080" fill="#C2185B"/>
+  <rect x="0" y="760" width="1080" height="320" fill="#F6F1E7"/>
+  <circle cx="900" cy="640" r="150" fill="#FFD54F"/>
+  <text x="80" y="210" font-family="Arial, Helvetica, sans-serif" font-size="84" font-weight="700" fill="#FFFFFF">Glow beyond limits</text>
+  <text x="80" y="330" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="700" fill="#FFFFFF">FLAT 30% OFF</text>
+  <text x="80" y="430" font-family="Arial, Helvetica, sans-serif" font-size="46" fill="#F8BBD0">India's #1 vitamin C serum</text>
+  <text x="80" y="510" font-family="Arial, Helvetica, sans-serif" font-size="46" fill="#F8BBD0">Glow Serum now just Rs. 699</text>
+  <text x="80" y="880" font-family="Arial, Helvetica, sans-serif" font-size="40" fill="#A59C8A">Offer valid till 15 Nov. Shop at lumeraskin.in</text>
+  <text x="80" y="960" font-family="Arial, Helvetica, sans-serif" font-size="40" font-weight="700" fill="#1F4E5F">Lumera Skin</text>
+</svg>
