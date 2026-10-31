@@ -4,7 +4,7 @@ import { hasUnsupportedClaim } from "./engine/claims";
 import { runRuleChecks, type CheckContext } from "./engine/text";
 import { approvalRequirements, canApprove, canDecide, routeOf, routing } from "./governance";
 import { computeInsights, findConflicts, recommendedExamples } from "./insights";
-import { context, freshness, resolveSource, staleKnowledge } from "./knowledge";
+import { approvedSpan, context, freshness, resolveSource, staleKnowledge } from "./knowledge";
 import { seedHistory } from "./seed";
 import type { Decision, Finding, Revision } from "./types";
 
@@ -39,6 +39,17 @@ describe("regressions", () => {
     expect(f.find((x) => x.excerpt === "LAST CHANCE")?.suggestion).toBe("Shop the range");
     expect(f.find((x) => x.excerpt === "BUY NOW")?.suggestion).toBe("Shop the range");
     for (const x of f) if (x.suggestion) expect(check(x.suggestion).some((y) => y.ruleId === "R-2.4")).toBe(false);
+  });
+  it("treats wording backed by a usable registry claim as approved (AI evidence guard)", () => {
+    const text = "India's award-winning skincare brand.";
+    const usable = demoBrand.claims.filter((c) => c.status === "verified");
+    const at = text.indexOf("India's award-winning");
+    expect(approvedSpan(text, at, at + "India's award-winning".length, usable)).toBe(true);
+    expect(approvedSpan(text, text.indexOf("skincare"), text.indexOf("skincare") + 8, usable)).toBe(false);
+    // a retired claim's phrase is not protected
+    const retired = demoBrand.claims.filter((c) => c.id === "C-06");
+    expect(approvedSpan("fastest-growing", 0, 15, usable)).toBe(false);
+    expect(approvedSpan("fastest-growing", 0, 15, retired)).toBe(true);
   });
   it("cites the claim a fix is built from as evidence", () => {
     const f = check("India's #1 serum for dark spots.").find((x) => x.excerpt?.startsWith("#1"))!;

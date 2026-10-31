@@ -69,6 +69,24 @@ export function claimUsable(c: Claim, ctx: ContentContext, today: string): { ok:
   return { ok: true };
 }
 
+/**
+ * Does [start, end) in `text` overlap wording that a usable claim substantiates
+ * (one of its phrases, or its full approved wording)? Pass only claims usable in context.
+ */
+export function approvedSpan(text: string, start: number, end: number, usable: Claim[]): boolean {
+  const lower = text.toLowerCase();
+  for (const c of usable) {
+    for (const phrase of [...c.supports, c.wording]) {
+      const p = phrase.toLowerCase();
+      if (!p) continue;
+      for (let i = lower.indexOf(p); i !== -1; i = lower.indexOf(p, i + 1)) {
+        if (i < end && i + p.length > start) return true;
+      }
+    }
+  }
+  return false;
+}
+
 export function ruleSource(r: Rule, version: number): SourceRef {
   return { kind: "rule", id: r.id, ref: `Guideline ${r.section}`, quote: r.text, doc: r.source, version };
 }

@@ -2,7 +2,7 @@ import "server-only";
 import type { Brand, ContentContext, Finding, Segment, SourceRef } from "./types";
 import { runRuleChecks } from "./engine/text";
 import { uid } from "./engine/util";
-import { claimSource, claimUsable, factSource, ruleApplies, ruleSource } from "./knowledge";
+import { approvedSpan, claimSource, claimUsable, factSource, ruleApplies, ruleSource } from "./knowledge";
 
 /**
  * The language-model layer. Everything it returns is treated as a proposal and
@@ -80,7 +80,7 @@ Rules you must follow:
 - Do not repeat issues already listed under "already_flagged".
 - Never invent facts, numbers, studies or sources. Rewrites may only use wording from the approved facts and claim registry, word for word.
 - Preserve the author's intent, channel and approximate length.
-- Text that matches an approved fact word for word is compliant. If you are not sure something breaks a rule, do not report it.
+- Text that matches an approved fact, or uses an approved_phrase from the claim registry, is compliant: never flag it. If you are not sure something breaks a rule, do not report it.
 Respond with JSON only.`;
 
 interface RawAiFinding {
@@ -153,7 +153,7 @@ export async function aiReview(
     tagline: brand.tagline,
     rules: rules.map((r) => ({ id: r.id, section: r.section, rule: r.text })),
     approved_facts: known.facts.map((f) => ({ id: f.id, text: f.value })),
-    claim_registry: known.claims.map((c) => ({ id: c.id, approved_wording: c.wording })),
+    claim_registry: known.claims.map((c) => ({ id: c.id, approved_wording: c.wording, approved_phrases: c.supports })),
     content: segments.map((s) => ({ segmentId: s.id, label: s.label, text: s.text.slice(0, 6000) })),
     already_flagged: ruleFindings.map((f) => ({ ruleId: f.ruleId, excerpt: f.excerpt })),
     needs_fix: needFix.map((f) => ({ findingId: f.id, segmentId: f.segmentId, excerpt: f.excerpt, problem: f.message })),
@@ -178,6 +178,11 @@ export async function aiReview(
       continue;
     }
     const start = idx, end = idx + excerpt.length;
+    // Evidence guard: wording backed by a usable registry claim is approved, whatever the model thinks.
+    if (approvedSpan(seg.text, start, end, known.claims)) {
+      rejected++;
+      continue;
+    }
     const dup = ruleFindings.concat(out).some((f) => f.segmentId === seg.id && f.start != null && f.start < end && (f.end ?? 0) > start);
     if (dup) continue;
     const replacement = clean(a.replacement);
@@ -238,7 +243,7 @@ export async function aiRewrite(text: string, ctx: ContentContext, brand: Brand,
       rules: brand.rules.filter((r) => ruleApplies(r, ctx)).map((r) => ({ id: r.id, rule: r.text })),
       terminology: brand.terms.map((t) => ({ avoid: t.avoid, prefer: t.prefer })),
       approved_facts: known.facts.map((f) => ({ id: f.id, text: f.value })),
-      claim_registry: known.claims.map((c) => ({ id: c.id, approved_wording: c.wording })),
+      claim_registry: known.claims.map((c) => ({ id: c.id, approved_wording: c.wording, approved_phrases: c.supports })),
       issues,
       content: text.slice(0, 6000),
     }),
